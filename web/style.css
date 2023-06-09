@@ -1,10 +1,46 @@
+/*
+Primary Color: #2C3E50 (Midnight Blue)
+Secondary Color: #34495E (Wet Asphalt)
+Accent Color: #E67E22 (Carrot Orange)
+Background Color: #222222 (Dark Gray)
+Text Color: #FFFFFF (White)
+Link Color: #1ABC9C (Turquoise)
+Button Color: #2980B9 (Belize Hole)
+Error Color: #E74C3C (Alizarin)
+*/
+*{
+  margin: 0;
+  padding: 0;
+}
+body{
+  background-color: #222222;
+  height: 100vh;
+}
+#nav{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px solid #2C3E50;
+  border-radius: 3%;
+  height: 10%;
+}
+#profit{
+  color:#1ABC9C;
+  border: 1px solid #1ABC9C;
+  border-radius: 1px;
+}
+#outcome1,#outcome2{
+  color:#E74C3C;
+}
 #table-header{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin: 0 0 10px 0;
-  border-top: 2px solid #000;
+  margin-top: 25px;
+  margin-bottom: 10px;
   border-radius: 3%;
 }
 #sortCont{
@@ -16,25 +52,47 @@
   width: 40%;
   height: 80;
   border-left: 2px solid #007bff;
+  
+}
+#filterSportCont{
+  width: 20%;
+  border-left: 2px solid #007bff;
+  display: flex;
+  flex-direction: row;
+ justify-content: space-around;
+ align-items: center;
+}
+#filterBookmakerCont{
+  width: 30%;
+  border-left: 2px solid #007bff;
+  flex-direction: row;
+  justify-content: space-around;
+ align-items: center;
+  display: flex;
 }
 #table-header div{
   font-size: 24px;
   font-weight: bold;
-  color: #333333;
+  color: #FFFFFF;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
- width: 20%;
+  width: 20%;
 }
 .row{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-top: 2px solid #000;
+    border-top: 2px solid #34495E;
     border-radius: 3%;
+    color: #FFFFFF;
 
+}
+.row:hover{
+    background-color: #34495E;
+    color: #FFFFFF;
 }
 
 .col{
@@ -49,12 +107,12 @@
 label{
     font-size: 16px;
     font-weight: bold;
-    color: #333333;
+    color: #f8f8f2;
     
 }
 select {
     display: block;
-    width: 40%;
+    width: 30%;
     height: 10%;
     padding: 10px;
     font-size: 16px;
@@ -82,7 +140,7 @@ select {
     text-align: center;
     text-decoration: none;
     color: #ffffff;
-    background-color: #007bff;
+    background-color: #2980B9;
     border-radius: 5px;
     border: none;
     cursor: pointer;
@@ -90,5 +148,5 @@ select {
   }
   
   #loadBtn:hover {
-    background-color: #73abe7;
+    background-color: #2074ac;
   }

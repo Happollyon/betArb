@@ -7,18 +7,22 @@
     <script src="script.js"></script>
 </head>
 <body>
-    <div style="width:100%; display: flex;flex-direction: row;justify-content: space-around;align-items: center;"> 
+    <div id="nav" style="width:100%; display: flex;flex-direction: row;justify-content: space-around;align-items: center;"> 
         <div id="loadBtn" onclick="load()">load</div>
        
-        <div>
+        <div id="filterSportCont">
             <label for="sportInput">filter by sport</label>
             <select>
                 <option value="football">football</option>
                 <option value="basketball">basketball</option>
             </select>
         </div> 
-        <div>
+        <div id="filterBookmakerCont">
             <label for="dateInput">filter by bookPair</label>
+            <select>
+                <option value="bookPair1">bookPair1</option>
+                <option value="bookPair2">bookPair2</option>    
+            </select>
             <select>
                 <option value="bookPair1">bookPair1</option>
                 <option value="bookPair2">bookPair2</option>    

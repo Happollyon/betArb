@@ -65,11 +65,14 @@ function displayData(){
         event_date.className = 'col'
         bookmaker1.className = 'col'
         outcome1.className = 'col'
+        outcome1.id = 'outcome1'
         odds1.className = 'col'
         bookmaker2.className = 'col'
         outcome2.className = 'col'
+        outcome2.id = 'outcome2'
         odds2.className = 'col'
         profit.className = 'col'
+        profit.id = 'profit'
 
         // set the content
         sport.innerHTML = game.sport
