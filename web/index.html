@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <div style="width:100%; display: flex;flex-direction: row;justify-content: space-around;align-items: center;"> 
+        <div id="loadBtn" onclick="load()">load</div>
+       
+        <div>
+            <label for="sportInput">filter by sport</label>
+            <select>
+                <option value="football">football</option>
+                <option value="basketball">basketball</option>
+            </select>
+        </div> 
+        <div>
+            <label for="dateInput">filter by bookPair</label>
+            <select>
+                <option value="bookPair1">bookPair1</option>
+                <option value="bookPair2">bookPair2</option>    
+            </select>
+        </div>
+        <div id="sortCont">
+            <label for="selectInput">Sort by:</label>
+            <select onchange="sortData(this.value)" id="selectInput" name="selectInput">
+            <option value="sport">sport</option>
+            <option value="date">date</option>
+            <option value="bookmaker1">bookmaker1</option>
+            <option value="bookmaker2">bookmaker2</option>
+            <option value="profit">profit</option>
+            </select>
+
+            <div style="display:fle;flex-direction: row;justify-content: space-around;">
+                <input type="radio" name="sortType" value="increasing">
+                <label for="increasing">increasing</label>
+                <input type="radio" name="sortType" value="decreasing">
+                <label for="decreasing" checked>decreasing</label><br>
+            </div>
+        </div>
+       
+    </div>  
+    <div id="table-header">
+        <div>Sport</div>
+        <div>Date</div>
+        <div>BookMaker1</div>
+        <div>BookMaker2</div>
+        <div>Profit</div>
+    </div>
+    
+    
+    <div id="pannel"></div>
+</body>
+</html>
