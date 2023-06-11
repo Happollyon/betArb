@@ -146,6 +146,12 @@ select {
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
+  #filterPairs{
+    background-color: #E67E22;
+    cursor: pointer;
+    padding:3px;
+    border-radius: 2px;
+  }
   
   #loadBtn:hover {
     background-color: #2074ac;

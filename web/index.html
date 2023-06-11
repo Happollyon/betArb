@@ -12,20 +12,18 @@
        
         <div id="filterSportCont">
             <label for="sportInput">filter by sport</label>
-            <select>
-                <option value="football">football</option>
-                <option value="basketball">basketball</option>
+            <select id="selectSport" onchange="filterDataBySport()" name="selectSport">
+                <option value="all">all</option>
             </select>
         </div> 
+
         <div id="filterBookmakerCont">
-            <label for="dateInput">filter by bookPair</label>
-            <select>
-                <option value="bookPair1">bookPair1</option>
-                <option value="bookPair2">bookPair2</option>    
+            <label for="dateInput" id="filterPairs" onclick="filterBookemakerPairs()">filter by bookPair</label>
+            <select id="selectBookmaker1">
+                <option value="all">all</option>                  
             </select>
-            <select>
-                <option value="bookPair1">bookPair1</option>
-                <option value="bookPair2">bookPair2</option>    
+            <select id="selectBookmaker2">
+                <option value="all">all</option>                
             </select>
         </div>
         <div id="sortCont">
@@ -41,8 +39,8 @@
             <div style="display:fle;flex-direction: row;justify-content: space-around;">
                 <input type="radio" name="sortType" value="increasing">
                 <label for="increasing">increasing</label>
-                <input type="radio" name="sortType" value="decreasing">
-                <label for="decreasing" checked>decreasing</label><br>
+                <input type="radio" name="sortType" value="decreasing" checked>
+                <label for="decreasing" >decreasing</label><br>
             </div>
         </div>
        

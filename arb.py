@@ -40,9 +40,11 @@ print(url)
 
 def FindArbs():
     with open('./bets/data.json', 'w') as outfile:
-        outfile.write('[') # start of array
+        outfile.write('{') # start of object
+        outfile.write('"bets":[') # start of array
     first = True # boolean to check if it is the first object in the array
     bookmakers = []
+    sports = []
     for sport in testJson:#loop through sports
 
         for i,bookmaker in enumerate(sport["bookmakers"]): #loop through bookmakers
@@ -71,6 +73,8 @@ def FindArbs():
                                 bookmakers.append(referenceBookmaker['title'])
                             if nextBookmaker['title'] not in bookmakers:
                                 bookmakers.append(nextBookmaker['title'])
+                            if sport['sport_title'] not in sports:
+                                sports.append(sport['sport_title'])
                             obj = {
                                 "sport": sport['sport_title'],
                                 "event_date": unix_to_time(sport['commence_time']),
@@ -88,8 +92,11 @@ def FindArbs():
                                 json.dump(obj, outfile)
                                 first = False
     with open('./bets/data.json', 'a') as outfile:
-        outfile.write(']') # end of array                            
+        outfile.write('],"bookmakers":') # end of array                            
         
         json.dump(bookmakers, outfile)
+        outfile.write(',"sports":') # end of array
+        json.dump(sports, outfile)
+        outfile.write('}') 
 
 FindArbs()

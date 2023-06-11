@@ -8,7 +8,8 @@ async function load() {
         res =>{res.text().then(res=>{
             data = res ? JSON.parse(res) : {}
             displayData()
-            
+            loadSportOtions()   
+            loadBookmakerOtions()
             
         })}
         
@@ -19,7 +20,7 @@ function sortData(key) {
     let sortType = document.querySelector('input[name="sortType"]:checked').value;
     
     if(sortType =="increasing"){
-        data.sort((a, b) => {
+        data['bets'].sort((a, b) => {
         if (a[key] < b[key]) {
             return -1;
         }
@@ -29,7 +30,7 @@ function sortData(key) {
         return 0;
         });
     }else{
-        data.sort((a, b) => {
+        data['bets'].sort((a, b) => {
             if (a[key] < b[key]) {
                 return 1;
             }
@@ -42,9 +43,11 @@ function sortData(key) {
     }
     document.getElementById('pannel').innerHTML = ""
     displayData();
-  } 
+  }
+
 function displayData(){
-     data.map((game) => {
+    document.getElementById('pannel').innerHTML = ""
+     data['bets'].map((game) => {
         // create the elements
         var row = document.createElement('div')
         var innerRow1 = document.createElement('div')
@@ -101,3 +104,47 @@ function displayData(){
 
         document.getElementById('pannel').appendChild(row)
     })}
+
+function loadSportOtions(){
+    data['sports'].map((sport) => {
+        var option = document.createElement('option')
+        option.value = sport
+        option.innerHTML = sport
+        document.getElementById('selectSport').appendChild(option)
+    })
+}
+async function filterDataBySport(){
+    data['bets'] = await data['bets'].filter((game) => {
+        
+        return game.sport == document.getElementById('selectSport').value
+    })
+    console.log(data)
+    displayData()
+}
+
+function loadBookmakerOtions(){
+   
+    data['bookmakers'].map((bookmaker) => {
+        var option1 = document.createElement('option')
+        var option2 = document.createElement('option')
+        option1.value = bookmaker
+        option1.innerHTML = bookmaker
+        option2.value = bookmaker
+        option2.innerHTML = bookmaker
+        document.getElementById('selectBookmaker1').appendChild(option1)
+        document.getElementById('selectBookmaker2').appendChild(option2)
+    })
+}
+
+function filterBookemakerPairs(){
+
+
+    let bookmaker1 = document.getElementById('selectBookmaker1').value
+    let bookmaker2 = document.getElementById('selectBookmaker2').value
+    data['bets'] = data['bets'].filter((game) => {
+        return (game.bookmaker1 == bookmaker1 || game.bookmaker1== bookmaker2 )&& (game.bookmaker2 == bookmaker2 || game.bookmaker2 == bookmaker1)  
+        
+    })
+    
+    displayData()
+}
