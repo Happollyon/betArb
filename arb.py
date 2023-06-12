@@ -6,7 +6,31 @@ import requests
 import json
 from datetime import datetime    
 api_key = json.load(open('info.json'))['key']
-testJson = json.load(open('test.json'))
+testJson = json.load(open('./bets/response.json'))
+
+def calculate_exchange_profit(back_odds, back_stake, lay_odds, lay_stake):
+    profit = (back_odds - 1) * back_stake - (lay_odds - 1) * lay_stake
+    return profit
+
+def calculate_liability(back_odds, back_stake, lay_odds):
+    liability = (back_stake * (back_odds - 1)) / (lay_odds - 1)
+    return liability
+
+def calculate_lay_stake(back_odds, back_stake, lay_odds):
+    lay_stake = (back_stake * (back_odds - 1)) / (lay_odds - 1)
+    return lay_stake
+
+def isArbitrage(back_odds, back_stake, lay_odds):
+    if (back_odds - 1) * back_stake > (lay_odds - 1) * calculate_lay_stake(back_odds, back_stake, lay_odds):
+        return True
+    else:
+        return False
+    
+def calculate_profit(back_odds, back_stake, lay_odds):
+    if isArbitrage(back_odds, back_stake, lay_odds):
+        return calculate_exchange_profit(back_odds, back_stake, lay_odds, calculate_lay_stake(back_odds, back_stake, lay_odds))
+    else:
+        return 0
 
 #function that calls the api and returns the json
 def get_json(url):
@@ -34,18 +58,25 @@ def profit(odd1,odd2):
 #this request costs 2   credits
 url = "https://api.the-odds-api.com/v4/sports/upcoming/odds/?apiKey="+api_key+"&regions=eu,uk&markets=h2h&oddsFormat=decimal&dateFormat=unix"
 
-print(unix_to_time(1686130200))
-print(url)
 
 
 def FindArbs():
+    print("(+) info: Getting json from api")
+    response = testJson
+    #save the json file
+    with open('./bets/response.json', 'w') as file:
+        print("(+) info: Saving json file")
+        json.dump(response, file)
+    print("(+) info: file saved")
+
     with open('./bets/data.json', 'w') as outfile:
         outfile.write('{') # start of object
         outfile.write('"bets":[') # start of array
     first = True # boolean to check if it is the first object in the array
     bookmakers = []
     sports = []
-    for sport in testJson:#loop through sports
+    for sport in response:#loop through sports
+        print("(+) info: Checking sport: "+str(sport['sport_title']))
 
         for i,bookmaker in enumerate(sport["bookmakers"]): #loop through bookmakers
             homeTeam = sport['home_team'] #get the home team
@@ -54,21 +85,16 @@ def FindArbs():
 
             for j,nextBookmaker in enumerate(sport["bookmakers"],i+1): #loop through the rest of the bookmakers
                 referenceOutcome = referenceBookmaker['markets'][0]['outcomes'] #get the outcomes of the reference bookmaker
-                nextOutcome = nextBookmaker['markets'][0]['outcomes'] #get the outcomes of the next bookmaker
+                legs = len(referenceOutcome)
+                if len(nextBookmaker['markets'])<2:
+                    continue
+                nextOutcome = nextBookmaker['markets'][1]['outcomes'] #get the outcomes of the next bookmaker
 
                 for k in range(len(referenceOutcome)): #loop through the outcomes of the reference bookmaker
 
                     for l in range(len(nextOutcome)): #loop through the outcomes of the next bookmaker
-                        if arb(referenceOutcome[k]['price'],nextOutcome[l]['price']) and referenceOutcome[k]['name'] != nextOutcome[l]['name'] and referenceBookmaker['title'] != nextBookmaker['title']:
+                        if isArbitrage(referenceOutcome[k]['price'],100,nextOutcome[l]['price']) and referenceOutcome[k]['name'] == nextOutcome[l]['name'] and referenceBookmaker['title'] != nextBookmaker['title']:
                             
-                            print("sport: " + sport['sport_title'])
-                            print("date: " + unix_to_time(sport['commence_time']))
-                            print("bookmaker1: " + referenceBookmaker['title'] + " -> " + referenceOutcome[k]['name']+ " -> " + str(referenceOutcome[k]['price']))
-                            print("bookmaker2: " + nextBookmaker['title'] + " -> " + nextOutcome[l]['name']+ " -> " + str(nextOutcome[l]['price']))
-                            #  bookmaker1: Bet365 -> australia to win -> 1.5
-                            #  bookmaker2: Betfair -> india to win -> 1.6
-                            print("profit: " + str(profit(referenceOutcome[k]['price'],nextOutcome[l]['price'])) + "%")
-                            print("")
                             if referenceBookmaker['title'] not in bookmakers:
                                 bookmakers.append(referenceBookmaker['title'])
                             if nextBookmaker['title'] not in bookmakers:
@@ -84,7 +110,8 @@ def FindArbs():
                                 "bookmaker2": nextBookmaker['title'],
                                 "outcome2": nextOutcome[l]['name'],
                                 "odds2": nextOutcome[l]['price'],
-                                "profit": profit(referenceOutcome[k]['price'],nextOutcome[l]['price'])
+                                "profit": calculate_profit(referenceOutcome[k]['price'],100,nextOutcome[l]['price']),
+                                "legs": legs
                             }
                             with open('./bets/data.json', 'a') as outfile:
                                 if not first:
@@ -97,6 +124,7 @@ def FindArbs():
         json.dump(bookmakers, outfile)
         outfile.write(',"sports":') # end of array
         json.dump(sports, outfile)
-        outfile.write('}') 
+        outfile.write('}') # end of object
+    print("Done")
 
 FindArbs()

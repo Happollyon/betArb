@@ -1,12 +1,14 @@
 
 // call a function when the page is loaded
 var data
+var backupData
 async function load() {
    
     // get the data from the server
     await fetch('../bets/data.json',{mode: 'no-cors'}).then(
         res =>{res.text().then(res=>{
             data = res ? JSON.parse(res) : {}
+            backupData = data
             displayData()
             loadSportOtions()   
             loadBookmakerOtions()
@@ -45,7 +47,8 @@ function sortData(key) {
     displayData();
   }
 
-function displayData(){
+function displayData(origin){
+   
     document.getElementById('pannel').innerHTML = ""
      data['bets'].map((game) => {
         // create the elements
@@ -78,7 +81,7 @@ function displayData(){
         profit.id = 'profit'
 
         // set the content
-        sport.innerHTML = game.sport
+        sport.innerHTML = "("+game.legs+") "+game.sport
         event_date.innerHTML = game.event_date
         bookmaker1.innerHTML = game.bookmaker1
         outcome1.innerHTML = game.outcome1
