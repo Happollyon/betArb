@@ -9,16 +9,17 @@ api_key = json.load(open('info.json'))['key']
 testJson = json.load(open('./bets/response.json'))
 
 def calculate_exchange_profit(back_odds, back_stake, lay_odds, lay_stake):
-    profit = (back_odds - 1) * back_stake - (lay_odds - 1) * lay_stake
+    profit = ((back_odds - 1) * back_stake) - ((lay_odds - 1) * lay_stake)
+    profit = round(profit, 2)
     return profit
 
 def calculate_liability(back_odds, back_stake, lay_odds):
-    liability = (back_stake * (back_odds - 1)) / (lay_odds - 1)
+    liability = (back_stake * (back_odds - 0.02)) / (lay_odds - 0.02)
     return liability
 
 def calculate_lay_stake(back_odds, back_stake, lay_odds):
-    lay_stake = (back_stake * (back_odds - 1)) / (lay_odds - 1)
-    return lay_stake
+    lay_stake = (back_stake * (back_odds - 0.02)) / (lay_odds - 0.02)
+    return round(lay_stake, 2)
 
 def isArbitrage(back_odds, back_stake, lay_odds):
     if (back_odds - 1) * back_stake > (lay_odds - 1) * calculate_lay_stake(back_odds, back_stake, lay_odds):
@@ -62,7 +63,7 @@ url = "https://api.the-odds-api.com/v4/sports/upcoming/odds/?apiKey="+api_key+"&
 
 def FindArbs():
     print("(+) info: Getting json from api")
-    response = testJson
+    response = get_json(url)
     #save the json file
     with open('./bets/response.json', 'w') as file:
         print("(+) info: Saving json file")

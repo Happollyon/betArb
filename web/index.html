@@ -7,6 +7,31 @@
     <script src="script.js"></script>
 </head>
 <body>
+    <div id="betting-panel" style="display: none;">
+        <form style="display: flex; flex-direction: column; align-items: center;color: aliceblue;padding: 25px; font-weight: bolder;">
+          <label for="backStake" style="margin-bottom: 10px;">Back Stake:</label>
+          <input type="number" id="backStake" name="backStake" value="100" style="margin-bottom: 20px; padding: 5px; color: black;">
+          <div style="display: flex; flex-direction: column; align-items: center;">
+            <div id="betting-sport" style="margin-bottom: 10px; color: #2980B9;"></div>
+            <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%;">
+              <div id="betting-bookmaker1" style="width: 30%; margin-right: 10px;"></div>
+              <div id="betting-outcome1" style="width: 30%; margin-right: 10px;"></div>
+              <div id="betting-odds1" style="width: 30%;"></div>
+            </div>
+            <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; margin-top: 10px;">
+              <div id="back-stake" style="width: 30%; margin-right: 10px;"></div>
+              <div id="betting-bookmaker2" style="width: 30%; margin-right: 10px;"></div>
+              <div id="betting-outcome2" style="width: 30%; margin-right: 10px;"></div>
+              <div id="betting-odds2" style="width: 30%;"></div>
+            </div>
+            <div id="lay-stake" style="margin-top: 10px;"></div>
+            <div id="profit-bookmaker" style="margin-top: 10px; color:#1ABC9C">Profit Bookmaker: </div>
+            <div id="profit-exchange" style="margin-top: 10px;color:#1ABC9C">Profit Exchange: </div>
+            <button type="button" style="margin-top: 50ox;" id="calculateBtn">Calculate</button>
+          </div>
+        </form>
+      </div>
+      
     <div id="nav" style="width:100%; display: flex;flex-direction: row;justify-content: space-around;align-items: center;"> 
         <div id="loadBtn" onclick="load()">load</div>
        
@@ -52,8 +77,10 @@
         <div>BookMaker2</div>
         <div>Profit</div>
     </div>
+ 
     
-    
-    <div id="pannel"></div>
+    <div id="pannel">
+        
+    </div>
 </body>
 </html>

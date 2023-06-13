@@ -88,8 +88,10 @@ body{
     border-top: 2px solid #34495E;
     border-radius: 3%;
     color: #FFFFFF;
+    cursor: pointer;
 
 }
+
 .row:hover{
     background-color: #34495E;
     color: #FFFFFF;
@@ -132,7 +134,7 @@ select {
     font-weight: normal;
   }
   
-#loadBtn {
+#loadBtn,#calculateBtn {
     display: inline-block;
     padding: 10px 20px;
     font-size: 16px;
@@ -156,3 +158,20 @@ select {
   #loadBtn:hover {
     background-color: #2074ac;
   }
+#betting-panel{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 2;
+  background-color:#222222;
+  color: #ffffff;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+#backStake{
+width: 30%;
+height: 5%;
+color: #ffffff;
+
+}
