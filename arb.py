@@ -8,6 +8,7 @@ from datetime import datetime
 api_key = json.load(open('info.json'))['key']
 testJson = json.load(open('./bets/response.json'))
 
+
 def calculate_exchange_profit(back_odds, back_stake, lay_odds, lay_stake):
     profit = ((back_odds - 1) * back_stake) - ((lay_odds - 1) * lay_stake)
     profit = round(profit, 2)
@@ -66,9 +67,10 @@ url = "https://api.the-odds-api.com/v4/sports/upcoming/odds/?apiKey="+api_key+"&
 
 
 def FindArbs():
+    notTrustedBookmakers = ["1xBet","MyBookie.ag"]
     print("(+) info: Getting json from api")
-    #response = get_json(url)
-    response = testJson
+    response = get_json(url)
+    #response = testJson
     #save the json file
     with open('./bets/response.json', 'w') as file:
         print("(+) info: Saving json file")
@@ -87,11 +89,17 @@ def FindArbs():
         print("(+) info: Checking sport: "+str(sport['sport_title']))
         
         for i,bookmaker in enumerate(sport["bookmakers"]): #loop through bookmakers
-    
+            if bookmaker['title'] in notTrustedBookmakers: 
+                #print("(+) info: Bookmaker "+str(bookmaker['title'])+" is not trusted")
+                continue
             referenceBookmaker = bookmaker #get the bookmaker object
 
-            for j,referenceMarket in enumerate(referenceBookmaker['markets']): #loop through the markets of the reference bookmaker
+            for j,referenceMarket in enumerate(referenceBookmaker['markets']): #loop through the markets of the reference bookmaker   
                 for k,nextBookmaker in enumerate(sport["bookmakers"],i+1): #loop through the rest of the bookmakers
+                    if nextBookmaker['title'] in notTrustedBookmakers:
+                        #print("(+) info: Bookmaker "+str(nextBookmaker['key'])+" is not trusted")
+                        continue
+    
                     for l,nextMarket in enumerate(nextBookmaker['markets']): #loop through the markets of the next bookmaker
                         referenceOutcomes = referenceMarket['outcomes'] #get the outcomes of the reference bookmaker
                         legs = len(referenceOutcomes)
@@ -131,7 +139,7 @@ def FindArbs():
                                     if arbFound:
                                         if referenceOutcome['name'] != nextOutcome['name']:
                                             outcome_check = True
-                                        print("arb found: "+str(arbFound)+ " bookemakers "+str(outcome_check))
+                                        #print("arb found: "+str(arbFound)+ " bookemakers "+str(outcome_check))
                                         profit = calculate_profitBookBook(referenceOutcome['price'],100,nextOutcome['price'])
                                 else:
 
@@ -139,7 +147,7 @@ def FindArbs():
                                     if arbFound:
                                         if referenceOutcome['name'] == nextOutcome['name']:
                                             outcome_check = True
-                                        print("arb found: "+str(arbFound)+ " mixed "+str(outcome_check))
+                                        #print("arb found: "+str(arbFound)+ " mixed "+str(outcome_check))
                                         profit = calculate_profitBookExchange(backods,100,layods)
                                 
                                 if  arbFound and outcome_check and referenceBookmaker['title'] != nextBookmaker['title']:
