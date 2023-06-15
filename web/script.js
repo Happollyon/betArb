@@ -75,6 +75,8 @@ function displayData(origin){
         row.setAttribute('data-outcome2',game.outcome2)
         row.setAttribute('data-odds1',game.odds1)
         row.setAttribute('data-odds2',game.odds2)
+        row.setAttribute('data-bookmaker1Type',game.bookmaker1Type)
+        row.setAttribute('data-bookmaker2Type',game.bookmaker2Type)
         event_date.className = 'col'
         bookmaker1.className = 'col'
         outcome1.className = 'col'
@@ -96,7 +98,19 @@ function displayData(origin){
         bookmaker2.innerHTML = game.bookmaker2
         outcome2.innerHTML = game.outcome2
         odds2.innerHTML = game.odds2
-        profit.innerHTML = game.profit
+        profit.innerHTML = game.profit + "%"
+
+        if(game.bookmaker1Type == "bookmaker"){
+            outcome1.style.color = "green"
+        }else{
+            outcome1.style.color = "red"
+        }
+        if(game.bookmaker2Type == "bookmaker"){
+            outcome2.style.color = "green"
+        
+        }else{
+            outcome2.style.color = "red"
+        }
 
         innerRow1.appendChild(bookmaker1)
         innerRow1.appendChild(outcome1)
@@ -160,32 +174,125 @@ function filterBookemakerPairs(){
     displayData()
 }
 function OpenBet(event){
-    let row = event.target
-    document.getElementById('betting-panel').style.display = 'flex'
-    document.getElementById('betting-sport').innerHTML = "Sport: "+row.getAttribute('data-sport')
-    document.getElementById('betting-bookmaker1').innerHTML = "bookmaker: "+row.getAttribute('data-bookmaker1')
-    document.getElementById('betting-outcome1').innerHTML = "back team: "+row.getAttribute('data-outcome1')
-    document.getElementById('betting-odds1').innerHTML = "bookmaker odds: " + row.getAttribute('data-odds1')
-    document.getElementById('betting-bookmaker2').innerHTML = "exchange: "+row.getAttribute('data-bookmaker2')
-    document.getElementById('betting-outcome2').innerHTML = "lay team: " + row.getAttribute('data-outcome2')
-    document.getElementById('betting-odds2').innerHTML = "layd odds:  "+row.getAttribute('data-odds2')
-    document.getElementById("calculateBtn").addEventListener('click',()=>calculateBet(row))
 
+    let row = event.target
+    if(row.getAttribute('data-bookmaker1Type') == "bookmaker" && row.getAttribute('data-bookmaker2Type') == "bookmaker"){
+        document.getElementById('betting-panel').style.display = 'flex'
+        document.getElementById('betting-sport').innerHTML = "Sport: "+row.getAttribute('data-sport')
+        document.getElementById('betting-bookmaker1').innerHTML = "bookmaker1: "+row.getAttribute('data-bookmaker1')
+        document.getElementById('betting-outcome1').innerHTML = "team 1: "+row.getAttribute('data-outcome1')
+        document.getElementById('betting-odds1').innerHTML = "bookmaker1 odds: " + row.getAttribute('data-odds1')
+        document.getElementById('betting-bookmaker2').innerHTML = "Bookmaker2: "+row.getAttribute('data-bookmaker2')
+        document.getElementById('betting-outcome2').innerHTML = "team 2: " + row.getAttribute('data-outcome2')
+        document.getElementById('betting-odds2').innerHTML = "bookmaker2 odds:  "+row.getAttribute('data-odds2')
+        document.getElementById("calculateBtn").addEventListener('click',()=>calculateBet(row))
+        document.getElementById('profit-bookmaker').innerHTML = "Bookmaker1 profit: €0,00"
+        document.getElementById('profit-exchange').innerHTML = "Bookmaker2 profit: €0,00 "
+        document.getElementById('lay-stake').innerHTML = "bookmaker1 stake: €0,00 "
+        document.getElementById('back-stake').innerHTML = "bookmaker2 stake: €0,00" 
+    }else{
+        if(row.getAttribute('data-bookmaker1Type')=="bookmaker"){
+            document.getElementById('betting-panel').style.display = 'flex'
+            document.getElementById('betting-panel').style.display = 'flex'
+            document.getElementById('betting-sport').innerHTML = "Sport: "+row.getAttribute('data-sport')
+            document.getElementById('betting-bookmaker1').innerHTML = "bookmaker: "+row.getAttribute('data-bookmaker1')
+            document.getElementById('betting-outcome1').innerHTML = "back team : "+row.getAttribute('data-outcome1')
+            document.getElementById('betting-odds1').innerHTML = "bookmaker odds: " + row.getAttribute('data-odds1')
+            document.getElementById('betting-bookmaker2').innerHTML = "exchange: "+row.getAttribute('data-bookmaker2')
+            document.getElementById('betting-outcome2').innerHTML = "lay team : " + row.getAttribute('data-outcome2')
+            document.getElementById('betting-odds2').innerHTML = "exchange odds:  "+row.getAttribute('data-odds2')
+            document.getElementById("calculateBtn").addEventListener('click',()=>calculateBet(row))
+            document.getElementById('profit-bookmaker').innerHTML = "Bookmaker profit: €0,00"
+            document.getElementById('profit-exchange').innerHTML = "exchange profit: €0,00 "
+            document.getElementById('lay-stake').innerHTML = "exchange stake: €0,00 "
+            document.getElementById('back-stake').innerHTML = "Bookmaker stake: €0,00" 
+        }else{
+            
+            document.getElementById('betting-panel').style.display = 'flex'
+            document.getElementById('betting-sport').innerHTML = "Sport: "+row.getAttribute('data-sport')
+            document.getElementById('betting-bookmaker1').innerHTML = "Exchange: "+row.getAttribute('data-bookmaker1')
+            document.getElementById('betting-outcome1').innerHTML = "Lay team : "+row.getAttribute('data-outcome1')
+            document.getElementById('betting-odds1').innerHTML = "Exchange odds: " + row.getAttribute('data-odds1')
+            document.getElementById('betting-bookmaker2').innerHTML = "Bookmaker: "+row.getAttribute('data-bookmaker2')
+            document.getElementById('betting-outcome2').innerHTML = "Back team : " + row.getAttribute('data-outcome2')
+            document.getElementById('betting-odds2').innerHTML = "Bookmaker odds:  "+row.getAttribute('data-odds2')
+            document.getElementById("calculateBtn").addEventListener('click',()=>calculateBet(row))
+            document.getElementById('profit-bookmaker').innerHTML = "Exchange profit: €0,00"
+            document.getElementById('profit-exchange').innerHTML = "Bookmaker profit: €0,00 "
+            document.getElementById('lay-stake').innerHTML = "Bookmaker stake: €0,00 "
+            document.getElementById('back-stake').innerHTML = "Exchange stake: €0,00" 
+        }
+
+    }
 
 }
 function calculateBet(row){
     
-    let back_odds = row.getAttribute('data-odds1')
-    let back_stake = document.getElementById('backStake').value
-    let lay_odds = row.getAttribute('data-odds2')
-    let lay_stake = calculate_lay_stake(back_odds, back_stake, lay_odds)
-    let exchangeProfit = calculate_exchange_profit(back_odds, back_stake, lay_odds, lay_stake)
-    let bookmakerProfit = calculate_bookmaker_profit(back_odds, back_stake, lay_odds, lay_stake)
-    alert("lay stake: "+ lay_stake + " exchange profit: "+ exchangeProfit + " bookmaker profit: "+ bookmakerProfit)
-    document.getElementById('profit-bookmaker').innerHTML = "Bookmaker profit: "+ bookmakerProfit
-    document.getElementById('profit-exchange').innerHTML = "exchange profit: "+ exchangeProfit
-    document.getElementById('lay-stake').innerHTML = "Lay stake: "+ lay_stake
-    document.getElementById('back-stake').innerHTML = "back stake: " + back_stake
+    // identify if its mixed or bookmaker only
+        // calulate accoringly
+        // display accordingly
+
+    // identify which is the bookmaker and which is the exchange
+        // calculate accoringly
+        // display accordingly
+    if(row.getAttribute('data-bookmaker1Type') == "bookmaker" && row.getAttribute('data-bookmaker2Type') == "bookmaker"){
+        
+        let back_stake = document.getElementById('backStake').value
+        let bookmaker1Odds = row.getAttribute('data-odds1')
+        let bookmaker2Odds = row.getAttribute('data-odds2')
+
+        //Rafael Nadal stake = (£500 x 84.746%) / 99.032% = £427.87
+        //Kyle Edmund stake = (£500 x 14.286%) / 99.032% = £72.13
+        //£427.87 + £72.13 = £500 total stake
+        
+        let bookmaker1Stake = (back_stake * (1/bookmaker1Odds)) / (1/bookmaker1Odds + 1/bookmaker2Odds)
+        let bookmaker2Stake = (back_stake * (1/bookmaker2Odds)) / (1/bookmaker1Odds+ 1/bookmaker2Odds)
+        let bookmaker1Profit = (bookmaker1Stake * bookmaker1Odds) - (bookmaker1Stake + bookmaker2Stake)
+        let bookmaker2Profit = (bookmaker2Stake * bookmaker2Odds) - (bookmaker1Stake + bookmaker2Stake)
+        bookmaker1Profit = Math.round(bookmaker1Profit)
+        bookmaker2Profit = Math.round(bookmaker2Profit)
+        
+        document.getElementById('back-stake').innerHTML = "bookmaker1 stake: €"+ bookmaker1Stake
+        document.getElementById('lay-stake').innerHTML = "bookmaker2 stake: €"+ bookmaker2Stake
+        document.getElementById('profit-bookmaker').innerHTML = "bookmaker1 profit: €"+ bookmaker1Profit
+        document.getElementById('profit-exchange').innerHTML = "bookmaker2 profit: €"+ bookmaker2Profit
+
+
+    }else {
+        let lay_odds
+        let back_odds
+        if(row.getAttribute('data-bookmaker1Type') == "bookmaker"){
+            back_odds = row.getAttribute('data-odds1')
+            lay_odds = row.getAttribute('data-odds2')
+            let back_stake = document.getElementById('backStake').value
+        
+            let lay_stake = calculate_lay_stake(back_odds, back_stake, lay_odds)
+            let exchangeProfit = calculate_exchange_profit(back_odds, back_stake, lay_odds, lay_stake)
+            let bookmakerProfit = calculate_bookmaker_profit(back_odds, back_stake, lay_odds, lay_stake)
+            alert("lay stake: "+ lay_stake + " exchange profit: "+ exchangeProfit + " bookmaker profit: "+ bookmakerProfit)
+            document.getElementById('profit-bookmaker').innerHTML = "Bookmaker profit: €"+ bookmakerProfit
+            document.getElementById('profit-exchange').innerHTML = "exchange profit: €"+ exchangeProfit
+            document.getElementById('lay-stake').innerHTML = "Lay stake: €"+ lay_stake
+            document.getElementById('back-stake').innerHTML = "back stake: €" + back_stake
+        }else{
+            back_odds = row.getAttribute('data-odds2')
+            lay_odds = row.getAttribute('data-odds1')
+        
+            let back_stake = document.getElementById('backStake').value
+        
+            let lay_stake = calculate_lay_stake(back_odds, back_stake, lay_odds)
+            let exchangeProfit = calculate_exchange_profit(back_odds, back_stake, lay_odds, lay_stake)
+            let bookmakerProfit = calculate_bookmaker_profit(back_odds, back_stake, lay_odds, lay_stake)
+            
+            document.getElementById('profit-bookmaker').innerHTML = "exchange profit: €"+ exchangeProfit
+            document.getElementById('profit-exchange').innerHTML = "bookmaker profit: €"+ bookmakerProfit
+            document.getElementById('lay-stake').innerHTML = "back stake: €"+ back_stake
+            document.getElementById('back-stake').innerHTML = "lay stake: €" + lay_stake
+        }
+
+        
+        
+    }
 }
 function calculate_lay_stake(back_odds, back_stake, lay_odds) {
     let lay_stake = (back_stake * (back_odds - 0.02)) / (lay_odds - 0.02);
