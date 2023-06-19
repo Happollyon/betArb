@@ -48,7 +48,7 @@ function sortData(key) {
   }
 
 function displayData(origin){
-   
+   let registered = ["Betfair","Betfair Sportsbook","William Hill","Paddy Power","Nordic Bet","LeoVegas","Matchbook"]
     document.getElementById('pannel').innerHTML = ""
      data['bets'].map((game) => {
         // create the elements
@@ -65,6 +65,11 @@ function displayData(origin){
         var outcome2 = document.createElement('div')
         var odds2 = document.createElement('div')
         var profit = document.createElement('div')
+
+        if(registered.includes(game.bookmaker1)&&registered.includes(game.bookmaker2))
+        {
+            row.style.background="#00513A"
+        }
 
         row.className = 'row'
         sport.className = 'col'
@@ -174,10 +179,42 @@ function filterBookemakerPairs(){
     displayData()
 }
 function OpenBet(event){
-
+    url1 = "https://www.google.com/search?q=site:"+event.target.getAttribute('data-bookmaker1')+"+"+event.target.getAttribute('data-outcome1')+"+"+event.target.getAttribute('data-outcome2')+"+"+event.target.getAttribute('data-sport')
+    url2 = "https://www.google.com/search?q=site:"+event.target.getAttribute('data-bookmaker2')+"+"+event.target.getAttribute('data-outcome2')+"+"+event.target.getAttribute('data-outcome1')+"+"+event.target.getAttribute('data-sport')
+    
+    
+    //["Betfair","Betfair Sportsbook","William Hill","Paddy Power","Nordic Bet","LeoVegas","Matchbook"]
+    switch(event.target.getAttribute('data-bookmaker1')){
+        case "Paddy Power":
+            url1 = "https://www.paddypower.com/search?q="+event.target.getAttribute('data-outcome1')
+        case "Matchbook":
+            url1 = "https://www.google.com/search?q=matchbook.com+"+event.target.getAttribute('data-outcome1')
+        case "william hill":
+            url1 ="https://www.google.com/search?q=willianhill.com"+event.target.getAttribute('data-outcome1')
+        case "LeoVegas":
+            url1 ="https://www.leovegas.com/en-row/betting#home"
+         }
+    switch(event.target.getAttribute('data-bookmaker2')){
+        case "Paddy Power":
+            url2 = "https://www.paddypower.com/search?q="+event.target.getAttribute('data-outcome1')
+        case "Matchbook":
+            url2 ="https://www.google.com/search?q=matchbook.com+"+event.target.getAttribute('data-outcome2')
+        case "william hill":
+            url2 ="https://www.google.com/search?q=willianhill.com"+event.target.getAttribute('data-outcome2')
+        case "LeoVegas":
+            url2 ="https://www.leovegas.com/en-row/betting#home"
+        }
+    
     let row = event.target
     if(row.getAttribute('data-bookmaker1Type') == "bookmaker" && row.getAttribute('data-bookmaker2Type') == "bookmaker"){
         document.getElementById('betting-panel').style.display = 'flex'
+        document.getElementById('betting-bookmaker1').addEventListener('click', function() {
+            window.open(url1, '_blank');
+          });
+         
+        document.getElementById('betting-bookmaker2').addEventListener('click', function() {
+            window.open(url2, '_blank');
+        });
         document.getElementById('betting-sport').innerHTML = "Sport: "+row.getAttribute('data-sport')
         document.getElementById('betting-bookmaker1').innerHTML = "bookmaker1: "+row.getAttribute('data-bookmaker1')
         document.getElementById('betting-outcome1').innerHTML = "team 1: "+row.getAttribute('data-outcome1')
@@ -191,11 +228,19 @@ function OpenBet(event){
         document.getElementById('lay-stake').innerHTML = "bookmaker1 stake: €0,00 "
         document.getElementById('back-stake').innerHTML = "bookmaker2 stake: €0,00" 
     }else{
-        if(row.getAttribute('data-bookmaker1Type')=="bookmaker"){
+        if(
+            row.getAttribute('data-bookmaker1Type')=="bookmaker"){
             document.getElementById('betting-panel').style.display = 'flex'
             document.getElementById('betting-panel').style.display = 'flex'
             document.getElementById('betting-sport').innerHTML = "Sport: "+row.getAttribute('data-sport')
             document.getElementById('betting-bookmaker1').innerHTML = "bookmaker: "+row.getAttribute('data-bookmaker1')
+            document.getElementById('betting-bookmaker1').addEventListener('click', function() {
+                window.open(url1, '_blank');
+              });
+             
+            document.getElementById('betting-bookmaker2').addEventListener('click', function() {
+                window.open(url2, '_blank');
+            });
             document.getElementById('betting-outcome1').innerHTML = "back team : "+row.getAttribute('data-outcome1')
             document.getElementById('betting-odds1').innerHTML = "bookmaker odds: " + row.getAttribute('data-odds1')
             document.getElementById('betting-bookmaker2').innerHTML = "exchange: "+row.getAttribute('data-bookmaker2')
@@ -207,7 +252,13 @@ function OpenBet(event){
             document.getElementById('lay-stake').innerHTML = "exchange stake: €0,00 "
             document.getElementById('back-stake').innerHTML = "Bookmaker stake: €0,00" 
         }else{
-            
+            document.getElementById('betting-bookmaker1').addEventListener('click', function() {
+                window.open(url1, '_blank');
+              });
+             
+            document.getElementById('betting-bookmaker2').addEventListener('click', function() {
+                window.open(url2, '_blank');
+            });
             document.getElementById('betting-panel').style.display = 'flex'
             document.getElementById('betting-sport').innerHTML = "Sport: "+row.getAttribute('data-sport')
             document.getElementById('betting-bookmaker1').innerHTML = "Exchange: "+row.getAttribute('data-bookmaker1')

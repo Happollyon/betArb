@@ -48,7 +48,10 @@ def calculate_profitBookBook(back_odds, back_stake, lay_odds):
 #function that calls the api and returns the json
 def get_json(url):
     response = requests.get(url)
-    return response.json()
+    if response.status_code != 200:
+        return "error"
+    else:
+        return response.json()
 
 
 #function that creates converts unix time to readable time format ireland
@@ -64,16 +67,22 @@ def profit(odd1,odd2):
 #this request costs 2   credits
 url = "https://api.the-odds-api.com/v4/sports/upcoming/odds/?apiKey="+api_key+"&regions=eu,uk&markets=h2h&oddsFormat=decimal&dateFormat=unix"
 
-
+sportURL = "https://api.the-odds-api.com/v4/sports/?apiKey="+api_key
 
 def FindArbs():
-    notTrustedBookmakers = ["1xBet","MyBookie.ag"]
+
+    exclude = ["1xBet","MyBookie.ag","Pinnacle"]
+    subscribed = ["matchbook","paddypower","bet365","betfair","betfairExchange","nordicbet","leovegas","williamhill"]
     print("(+) info: Getting json from api")
+    
+    url = "https://api.the-odds-api.com/v4/sports/upcoming/odds/?apiKey="+api_key+"&regions=eu,uk&markets=h2h&oddsFormat=decimal&dateFormat=unix"
+    print("(+) url: "+url)
     response = get_json(url)
     #response = testJson
     #save the json file
+    
     with open('./bets/response.json', 'w') as file:
-        print("(+) info: Saving json file")
+        print("(+) info: Saving response.json file")
         json.dump(response, file)
     print("(+) info: file saved")
 
@@ -84,29 +93,30 @@ def FindArbs():
     bookmakers = []
     sports = []
 
-
+    
     for sport in response:#loop through sports
-        print("(+) info: Checking sport: "+str(sport['sport_title']))
+        print("(+) info: Sport: "+str(sport['sport_key']))
         
         for i,bookmaker in enumerate(sport["bookmakers"]): #loop through bookmakers
-            if bookmaker['title'] in notTrustedBookmakers: 
+            if bookmaker['title'] in exclude: 
                 #print("(+) info: Bookmaker "+str(bookmaker['title'])+" is not trusted")
                 continue
             referenceBookmaker = bookmaker #get the bookmaker object
 
             for j,referenceMarket in enumerate(referenceBookmaker['markets']): #loop through the markets of the reference bookmaker   
                 for k,nextBookmaker in enumerate(sport["bookmakers"],i+1): #loop through the rest of the bookmakers
-                    if nextBookmaker['title'] in notTrustedBookmakers:
+                    if nextBookmaker['title'] in exclude:
                         #print("(+) info: Bookmaker "+str(nextBookmaker['key'])+" is not trusted")
                         continue
     
                     for l,nextMarket in enumerate(nextBookmaker['markets']): #loop through the markets of the next bookmaker
                         referenceOutcomes = referenceMarket['outcomes'] #get the outcomes of the reference bookmaker
                         legs = len(referenceOutcomes)
+                        
                         #if len(nextBookmaker['markets'])<2:
                         #    continue
                         nextOutcomes = nextMarket['outcomes'] #get the outcomes of the next bookmaker
-
+                        netxtLEGS = len(nextOutcomes)
                         for n,referenceOutcome in enumerate(referenceOutcomes): #loop through the outcomes of the reference bookmaker
 
                             for o,nextOutcome in enumerate(nextOutcomes): #loop through the outcomes of the next bookmaker
@@ -114,7 +124,7 @@ def FindArbs():
                                 layods = 0
                                 backods = 0
 
-                                if nextMarket['key']=="h2h" and referenceMarket['key']=="h2h" and legs > 2:
+                                if nextMarket['key']=="h2h" and referenceMarket['key']=="h2h" and (legs > 2 or netxtLEGS > 2):
                                     continue
                                 if nextMarket['key']=="h2h_lay" and referenceMarket['key']=="h2h_lay":
                                     continue
@@ -130,7 +140,7 @@ def FindArbs():
                                 else:
                                     layods = referenceOutcome['price']
                                     bookmaker1Type = "exchange" 
-                                      
+                                    
                                 arbFound = False
                                 profit= 0
                                 outcome_check=False 
@@ -178,14 +188,14 @@ def FindArbs():
                                             outfile.write(',')
                                         json.dump(obj, outfile)
                                         first = False
-                               
+                                
     with open('./bets/data.json', 'a') as outfile:
         outfile.write('],"bookmakers":') # end of array                            
-        
+            
         json.dump(bookmakers, outfile)
         outfile.write(',"sports":') # end of array
         json.dump(sports, outfile)
         outfile.write('}') # end of object
-    print("Done")
+        print("Done")
 
 FindArbs()
