@@ -8,7 +8,28 @@ from datetime import datetime
 api_key = json.load(open('info.json'))['key']
 testJson = json.load(open('./bets/response.json'))
 
+def getMatchbookURL(outcome1,outcome2):
+    searchUrl = "https://www.matchbook.com/beta/api/search?language=en&limit=500&offset=0&query="+outcome1+"%20"+outcome2
+    data = get_json(searchUrl)
+    if data=="error":
+        return "error"
+    else:
+        print(data)
+        id= data['results'][0]['id']
+        sport = data['results'][0]['categories'][2]['url-name']
+        event = data['results'][0]['categories'][3]['url-name']
+        return  "https://www.matchbook.com/events/"+sport+"/"+event+"/"+str(id)
 
+def getWillianUrl(outcome1, outcome2):   
+    searchUrl = "https://search.williamhill.com/v2/?locale=en-gb&q="+outcome1+"%20"+outcome2+"&type=match" 
+    data = get_json(searchUrl)
+    if data == "error":
+        print("error")
+    else:
+        id = data["data"]["hits"][0]["value"]["id"]
+        sport = data["data"]["hits"][0]["value"]["sport"]["slug"]
+        return "https://sports.williamhill.com/betting/en-gb/"+sport+"/"+id
+    
 def calculate_exchange_profit(back_odds, back_stake, lay_odds, lay_stake):
     profit = ((back_odds - 1) * back_stake) - ((lay_odds - 1) * lay_stake)
     profit = round(profit, 2)
@@ -95,10 +116,10 @@ def FindArbs():
 
     
     for sport in response:#loop through sports
-        print("(+) info: Sport: "+str(sport['sport_key']))
+        print("(+) info: Sport: "+str(sport['sport_key'])) # type: ignore
         
-        for i,bookmaker in enumerate(sport["bookmakers"]): #loop through bookmakers
-            if bookmaker['title'] in exclude: 
+        for i,bookmaker in enumerate(sport["bookmakers"]): #loop through bookmakers # type: ignore
+            if bookmaker['title'] in exclude:  # type: ignore
                 #print("(+) info: Bookmaker "+str(bookmaker['title'])+" is not trusted")
                 continue
             referenceBookmaker = bookmaker #get the bookmaker object
@@ -115,7 +136,7 @@ def FindArbs():
                         
                         #if len(nextBookmaker['markets'])<2:
                         #    continue
-                        nextOutcomes = nextMarket['outcomes'] #get the outcomes of the next bookmaker
+                        nextOutcomes = nextMarket['outcomes'] # type: ignore #get the outcomes of the next bookmaker
                         netxtLEGS = len(nextOutcomes)
                         for n,referenceOutcome in enumerate(referenceOutcomes): #loop through the outcomes of the reference bookmaker
 
@@ -135,7 +156,7 @@ def FindArbs():
                                     layods = nextOutcome['price']
                                     bookmaker2Type = "exchange"
                                 if referenceMarket['key']=="h2h":
-                                    backods = referenceOutcome['price']
+                                    backods = referenceOutcome['price'] # type: ignore
                                     bookmaker1Type = "bookmaker"
                                 else:
                                     layods = referenceOutcome['price']
@@ -145,7 +166,7 @@ def FindArbs():
                                 profit= 0
                                 outcome_check=False 
                                 if nextMarket['key']=="h2h" and referenceMarket['key']=="h2h":
-                                    arbFound = isArbitrageBookBook(referenceOutcome['price'],100,nextOutcome['price'])
+                                    arbFound = isArbitrageBookBook(referenceOutcome['price'],100,nextOutcome['price']) # type: ignore
                                     if arbFound:
                                         if referenceOutcome['name'] != nextOutcome['name']:
                                             outcome_check = True
@@ -155,22 +176,34 @@ def FindArbs():
 
                                     arbFound = isArbitrageBookExchange(backods,100,layods)
                                     if arbFound:
-                                        if referenceOutcome['name'] == nextOutcome['name']:
+                                        if referenceOutcome['name'] == nextOutcome['name']: # type: ignore
                                             outcome_check = True
                                         #print("arb found: "+str(arbFound)+ " mixed "+str(outcome_check))
                                         profit = calculate_profitBookExchange(backods,100,layods)
                                 
                                 if  arbFound and outcome_check and referenceBookmaker['title'] != nextBookmaker['title']:
                                     
-                                    if referenceBookmaker['title'] not in bookmakers:
+                                    if referenceBookmaker['title'] not in bookmakers: # type: ignore
                                         bookmakers.append(referenceBookmaker['title'])
                                     if nextBookmaker['title'] not in bookmakers:
                                         bookmakers.append(nextBookmaker['title'])
                                     if sport['sport_title'] not in sports:
                                         sports.append(sport['sport_title'])
                                     
+                                    matchbookUrl = ""
+                                    willianHillUrl = ""
+                                    paddyPowerUrl = ""
+
+                                    if referenceBookmaker['title'] == "Matchbook" or nextBookmaker['title'] == "Matchbook":
+                                        matchbookUrl = getMatchbookURL(referenceOutcome['name'],nextOutcome['name'])
+
+                                    if referenceBookmaker['title'] == "William Hill" or nextBookmaker['title'] == "William Hill":
+                                        willianHillUrl = getWilliamHillURL(referenceOutcome['name'],nextOutcome['name'])
+
+                                       
+
                                     obj = {
-                                        "sport": sport['sport_title'],
+                                        "sport": sport['sport_title'], # type: ignore
                                         "event_date": unix_to_time(sport['commence_time']),
                                         "bookmaker1": referenceBookmaker['title'],
                                         "bookmaker1Type": bookmaker1Type,
@@ -181,7 +214,10 @@ def FindArbs():
                                         "outcome2": nextOutcome['name'],
                                         "odds2": nextOutcome['price'],
                                         "profit": profit,
-                                        "legs": legs
+                                        "legs": legs,
+                                        "matchbookUrl": matchbookUrl,
+                                        "willianHillUrl": willianHillUrl,
+                                        "paddyPowerUrl": paddyPowerUrl
                                     }
                                     with open('./bets/data.json', 'a') as outfile:
                                         if not first:

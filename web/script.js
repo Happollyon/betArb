@@ -82,6 +82,8 @@ function displayData(origin){
         row.setAttribute('data-odds2',game.odds2)
         row.setAttribute('data-bookmaker1Type',game.bookmaker1Type)
         row.setAttribute('data-bookmaker2Type',game.bookmaker2Type)
+        row.setAttribute('data-matchbookUrl',game.matchbookUrl)
+        row.setAttribute('data-willianHillUrl',game.willianHillUrl)
         event_date.className = 'col'
         bookmaker1.className = 'col'
         outcome1.className = 'col'
@@ -179,30 +181,39 @@ function filterBookemakerPairs(){
     displayData()
 }
 function OpenBet(event){
-    url1 = "https://www.google.com/search?q=site:"+event.target.getAttribute('data-bookmaker1')+"+"+event.target.getAttribute('data-outcome1')+"+"+event.target.getAttribute('data-outcome2')+"+"+event.target.getAttribute('data-sport')
-    url2 = "https://www.google.com/search?q=site:"+event.target.getAttribute('data-bookmaker2')+"+"+event.target.getAttribute('data-outcome2')+"+"+event.target.getAttribute('data-outcome1')+"+"+event.target.getAttribute('data-sport')
-    
+    let url1
+    let url2 
     
     //["Betfair","Betfair Sportsbook","William Hill","Paddy Power","Nordic Bet","LeoVegas","Matchbook"]
+    alert(event.target.getAttribute('data-bookmaker1'))
     switch(event.target.getAttribute('data-bookmaker1')){
+        
         case "Paddy Power":
-            url1 = "https://www.paddypower.com/search?q="+event.target.getAttribute('data-outcome1')
+            url1 = "https://www.paddypower.com/search?q="+event.target.getAttribute('data-outcome1')+"%20v%20"+event.target.getAttribute('data-outcome2')
+            break;
         case "Matchbook":
-            url1 = "https://www.google.com/search?q=matchbook.com+"+event.target.getAttribute('data-outcome1')
-        case "william hill":
-            url1 ="https://www.google.com/search?q=willianhill.com"+event.target.getAttribute('data-outcome1')
+            url1 = event.target.getAttribute('data-matchbookUrl')
+            break;
+        case "William Hill":
+            url1 =event.target.getAttribute('data-willianHillUrl')
+            break;
         case "LeoVegas":
             url1 ="https://www.leovegas.com/en-row/betting#home"
+            break;
          }
     switch(event.target.getAttribute('data-bookmaker2')){
         case "Paddy Power":
-            url2 = "https://www.paddypower.com/search?q="+event.target.getAttribute('data-outcome1')
+            url2 =  "https://www.paddypower.com/search?q="+event.target.getAttribute('data-outcome1')+"%20v%20"+event.target.getAttribute('data-outcome2')
+            break;
         case "Matchbook":
-            url2 ="https://www.google.com/search?q=matchbook.com+"+event.target.getAttribute('data-outcome2')
-        case "william hill":
-            url2 ="https://www.google.com/search?q=willianhill.com"+event.target.getAttribute('data-outcome2')
+            url2 = event.target.getAttribute('data-matchbookUrl')
+            break;
+        case "William Hill":
+            url2 =event.target.getAttribute('data-willianHillUrl')
+            break;
         case "LeoVegas":
             url2 ="https://www.leovegas.com/en-row/betting#home"
+            break;
         }
     
     let row = event.target
