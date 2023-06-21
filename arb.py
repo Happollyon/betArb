@@ -14,7 +14,7 @@ def getMatchbookURL(outcome1,outcome2):
     if data=="error":
         return "error"
     else:
-        print(data)
+      
         id= data['results'][0]['id']
         sport = data['results'][0]['categories'][2]['url-name']
         event = data['results'][0]['categories'][3]['url-name']

@@ -3,11 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <title>Web</title>
+
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
 </head>
 <body>
-    <div id="betting-panel" style="display: none;">
+    <div id="betting-panel" style="display: flex;">
+        <div style="margin-bottom: 10px;border: 1px solid white;padding: 4px; border-radius: 10px;cursor: pointer;">close X</div>
+        <div style="width:80vw;height: 70vh; background-color: #2C3E50; border-radius: 10px;">
+            <div style="height:15%;width: 100%;display: flex;flex-direction: row;justify-content: center;align-items: center;color:2980B9;font-size: 36px;color:#2980B9" >
+                Sport: MLB
+            </div>
+            <div style="width: 100%;height: 75%;display: flex;">
+
+                    <div style="width: 50%;height: 100%;display: flex;flex-direction: column;justify-content: center;align-items: center;">
+                            <div style="background-color: #34495E; width: 50%; height: 80%;border-radius: 10px;display: flex;flex-direction: column;align-items:center;justify-content: space-around;">
+                                    <div id="balance1" style="color:#1ABC9C;font-weight: bold;"">Balance: €70.00</div>    
+                                    
+                                    <div style="width:80%;height:80%; display:flex;flex-direction: column;justify-content: space-around;">
+                                        <div> Bookmaker: Unibet</div>
+                                        <div> Team A: Kansas City Royals</div>
+                                        <div> Odds: 2.25</div>
+                                        <div style="margin-bottom: 50%;"> Stake: €0.00</div>
+                                        
+                                    </div>
+
+                                    <div style="color: white;flex-direction: row;display: flex;margin-bottom: 10px;">
+                                        Unibet Profit: <div style="color: #1ABC9C;"> €0.00</div>
+                                    </div>
+                            </div>
+                            
+                    </div>
+
+                    <div style="width: 50%;height: 100%;display: flex;flex-direction: column;justify-content: center;align-items: center;">
+                        <div style="background-color: #34495E; width: 50%; height: 80%;border-radius: 10px;display: flex;flex-direction: column;align-items:center;justify-content: space-around;">
+                            <div id="balance1" style="color:#1ABC9C;font-weight: bold;"">Balance: €70.00</div>    
+                                    
+                            <div style="width:80%;height:80%; display:flex;flex-direction: column;justify-content: space-around;">
+                                <div> Bookmaker: Unibet</div>
+                                <div> Team A: Kansas City Royals</div>
+                                <div> Odds: 2.25</div>
+                                <div style="margin-bottom: 50%;"> Stake: €0.00</div>
+                                
+                            </div>
+
+                            <div style="color: white;flex-direction: row;display: flex;margin-bottom: 10px;">
+                                Unibet Profit: <div style="color: #1ABC9C;"> €0.00</div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div style="width: 100;height: 10%;flex-direction: column;align-items: center;justify-content: center;display: flex;">
+                <div id="calculateBtn">Calculate</div>
+            </div>
+            <div style="position: absolute;top: 50%;left: 50%; transform: translate(-50%,-50%);">
+                stake
+            </div>
+        </div>
+        <!--
         <form style="display: flex; flex-direction: column; align-items: center;color: aliceblue;padding: 25px; font-weight: bolder;">
           <label for="backStake" style="margin-bottom: 10px;">Back Stake:</label>
           <input type="number" id="backStake" name="backStake" value="100" style="margin-bottom: 20px; padding: 5px; color: black;">
@@ -30,6 +83,7 @@
             <button type="button" style="margin-top: 50ox;" id="calculateBtn">Calculate</button>
           </div>
         </form>
+    -->
       </div>
       
     <div id="nav" style="width:100%; display: flex;flex-direction: row;justify-content: space-around;align-items: center;"> 
@@ -37,7 +91,7 @@
        
         <div id="filterSportCont">
             <label for="sportInput">filter by sport</label>
-            <select id="selectSport" onchange="filterDataBySport()" name="selectSport">
+            <select id="selectSpor5t" onchange="filterDataBySport()" name="selectSport">
                 <option value="all">all</option>
             </select>
         </div> 

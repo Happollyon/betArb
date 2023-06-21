@@ -185,7 +185,7 @@ function OpenBet(event){
     let url2 
     
     //["Betfair","Betfair Sportsbook","William Hill","Paddy Power","Nordic Bet","LeoVegas","Matchbook"]
-    alert(event.target.getAttribute('data-bookmaker1'))
+   
     switch(event.target.getAttribute('data-bookmaker1')){
         
         case "Paddy Power":
