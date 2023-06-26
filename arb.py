@@ -4,6 +4,7 @@
 import json
 import requests
 import json
+import time
 from datetime import datetime    
 api_key = json.load(open('info.json'))['key']
 testJson = json.load(open('./bets/response.json'))
@@ -40,11 +41,13 @@ def calculate_liability(back_odds, back_stake, lay_odds):
     return liability
 
 def calculate_lay_stake(back_odds, back_stake, lay_odds):
-    lay_stake = (back_stake * (back_odds - 0.02)) / (lay_odds - 0.02)
+    lay_stake = (back_stake * (back_odds )) / (lay_odds - 0.02)
     return round(lay_stake, 2)
 
 def isArbitrageBookExchange(back_odds, back_stake, lay_odds):
-    if (back_odds - 1) * back_stake > (lay_odds - 1) * calculate_lay_stake(back_odds, back_stake, lay_odds):
+    
+    #if (back_odds - 1) * back_stake > (lay_odds - 1) * calculate_lay_stake(back_odds, back_stake, lay_odds):
+    if (back_odds * back_stake -(lay_odds * calculate_lay_stake(back_odds, back_stake, lay_odds)) > 0):
         return True
     else:
         return False
@@ -198,10 +201,12 @@ def FindArbs():
                                         matchbookUrl = getMatchbookURL(referenceOutcome['name'],nextOutcome['name'])
 
                                     if referenceBookmaker['title'] == "William Hill" or nextBookmaker['title'] == "William Hill":
-                                        willianHillUrl = getWilliamHillURL(referenceOutcome['name'],nextOutcome['name'])
+                                        willianHillUrl = getWillianUrl(referenceOutcome['name'],nextOutcome['name'])
 
-                                       
-
+                                    active = ["Matchbook","William Hill","Paddy Power"]                                           
+                                    if referenceBookmaker['title'] in active and nextBookmaker['title'] in active :  
+                                        if profit > 1:
+                                            print("===============FOUND ARB====================")
                                     obj = {
                                         "sport": sport['sport_title'], # type: ignore
                                         "event_date": unix_to_time(sport['commence_time']),
@@ -234,4 +239,11 @@ def FindArbs():
         outfile.write('}') # end of object
         print("Done")
 
-FindArbs()
+
+
+#function start
+
+while(True):
+    FindArbs()
+    time.sleep(300)
+    
