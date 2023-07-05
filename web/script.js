@@ -2,8 +2,13 @@
 // call a function when the page is loaded
 var data
 var backupData
+
+window.onload = () => {
+    //call function every 3 minutes
+    setInterval(load(), 180000); // 180000 milliseconds = 3 minutes
+}
 async function load() {
-   
+    
     // get the data from the server
     await fetch('../bets/data.json',{mode: 'no-cors'}).then(
         res =>{res.text().then(res=>{
@@ -52,6 +57,8 @@ function sortData(key) {
 
 function displayData(origin){
    let registered = ["William Hill","Paddy Power","Matchbook"]
+ 
+    
     document.getElementById('pannel').innerHTML = ""
      data['bets'].map((game) => {
         // create the elements
@@ -72,6 +79,8 @@ function displayData(origin){
         if(registered.includes(game.bookmaker1)&&registered.includes(game.bookmaker2))
         {
             row.style.background="#00513A"
+            var audio = new Audio('notification-sound-7062.mp3');
+            audio.play();
         }
 
         row.className = 'row'
@@ -370,7 +379,7 @@ function isArbitrage(back_odds, back_stake, lay_odds) {
 
 function calculate_bookmaker_profit(back_odds, back_stake, lay_odds, lay_stake) {
 
-    let profit = ((back_odds - 1) * back_stake) - ((lay_odds - 1) * lay_stake);
+    let profit = back_odds * back_stake - (back_stake + lay_stake);
     profit = Math.round(profit * 100) / 100;
     return profit;
 }
@@ -383,7 +392,7 @@ function calculate_profit(back_odds, back_stake, lay_odds) {
     }
 }
 function calculate_exchange_profit(back_odds, back_stake, lay_odds, lay_stake) {
-    let profit = ((back_odds - 1) * back_stake) - ((lay_odds - 1) * lay_stake);
+    let profit = lay_stake*lay_odds - (back_stake+lay_stake);
     profit = profit - (profit * 0.02)
     //let profit = ((back_odds - 1) * back_stake) - ((lay_odds - 1) * lay_stake);
     profit = Math.round(profit * 100) / 100;
