@@ -5,12 +5,25 @@ var backupData
 
 window.onload = () => {
     //call function every 3 minutes
-    setInterval(load(), 180000); // 180000 milliseconds = 3 minutes
+    setInterval(findarbs, 60000); // 180000 milliseconds = 3 minutes
+    
+}
+async function findarbs(){
+    await fetch("/findarbs",{mode: 'no-cors'}).then(res=>{
+        res.text().then(res=>{
+            res = JSON.parse(res)
+            console.log(res)
+            if(res.success){
+                load()
+            }
+        })
+    })
 }
 async function load() {
-    
+    var audio = new Audio('beep.mp3');
+    audio.play();
     // get the data from the server
-    await fetch('../bets/data.json',{mode: 'no-cors'}).then(
+    await fetch('/bets/data.json',{mode: 'no-cors'}).then(
         res =>{res.text().then(res=>{
             data = res ? JSON.parse(res) : {}
             backupData = data
@@ -79,7 +92,7 @@ function displayData(origin){
         if(registered.includes(game.bookmaker1)&&registered.includes(game.bookmaker2))
         {
             row.style.background="#00513A"
-            var audio = new Audio('notification-sound-7062.mp3');
+            var audio = new Audio('beep.mp3');
             audio.play();
         }
 
