@@ -9,17 +9,23 @@ from datetime import datetime
 api_key = json.load(open('info.json'))['key']
 testJson = json.load(open('../bets/response.json'))
 
+
 def getMatchbookURL(outcome1,outcome2):
+    #replace spaces with %20
+    outcome1 = outcome1.replace(" ","%20")
+    outcome2 = outcome2.replace(" ","%20")
     searchUrl = "https://www.matchbook.com/beta/api/search?language=en&limit=500&offset=0&query="+outcome1+"%20"+outcome2
+    print(searchUrl)
     data = get_json(searchUrl)
     if data=="error":
         return "error"
     else:
       
         id= data['results'][0]['id']
-        sport = data['results'][0]['categories'][2]['url-name']
-        event = data['results'][0]['categories'][3]['url-name']
-        return  "https://www.matchbook.com/events/"+sport+"/"+event+"/"+str(id)
+        #sport = data['results'][0]['categories'][2]['url-name']
+       #event = data['results'][0]['categories'][3]['url-name']
+        #return  "https://www.matchbook.com/events/"+sport+"/"+event+"/"+str(id)
+        return "https://www.matchbook.com/events/"+str(id)
 
 def getWillianUrl(outcome1, outcome2):   
     searchUrl = "https://search.williamhill.com/v2/?locale=en-gb&q="+outcome1+"%20"+outcome2+"&type=match" 
